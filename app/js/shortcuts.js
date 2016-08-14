@@ -179,6 +179,36 @@ module.exports = {};
     console.info("Resumed shortcuts");
   }
 
+  /**
+   * Get a feature's primary shortcut key to use for a menubar item.
+   * @param {String} featureName Name of the shortcut feature.
+   */
+  function getMenubarKey(featureName) {
+    var shortcut = allShortcuts["main"][featureName]["keys"][0],
+        key      = shortcut.substr(shortcut.lastIndexOf("+") + 1);
+
+    return key;
+  }
+
+  /**
+   * Get a feature's primary shortcut modifiers to use for a menubar item.
+   * @param {String} featureName Name of the shortcut feature.
+   */
+  function getMenubarModifiers(featureName) {
+    var shortcut = allShortcuts["main"][featureName]["keys"][0],
+        modifiers = shortcut.substring(0, shortcut.lastIndexOf("+"));
+
+    if (modifiers) {
+      // Ctrl === Command on Mac OS
+      if (modifiers.includes("Ctrl") && process.platform === "darwin") {
+        modifiers.replace("Ctrl", "Command");
+      }
+      return modifiers;
+    } else {
+      return "";
+    }
+  }
+
 
   // Public exports
   module.exports.add    = addShortcuts;
@@ -186,4 +216,6 @@ module.exports = {};
   module.exports.pause  = pauseShortcuts;
   module.exports.remove = removeShortcuts;
   module.exports.resume = resumeShortcuts;
+  module.exports.menubarKey = getMenubarKey;
+  module.exports.menubarModifiers = getMenubarModifiers;
 }());
